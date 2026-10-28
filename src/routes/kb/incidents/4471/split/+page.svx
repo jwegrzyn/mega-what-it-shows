@@ -1,0 +1,52 @@
+---
+layout: runbook
+title: '#4471 split · three problems, not one'
+owner: jwegrzyn
+status: open
+reviewed: 2026-10-28
+signature: jwegrzyn
+---
+
+<script>
+  import SplitTable from '#lib/kb/SplitTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) is marked known: one parser bug, one fix queued. The reports say
+otherwise. Read by what their bodies show and where they came from, they hold three problems.
+Each one now has a ticket of its own, and the count beside it is the number of reports it covers.
+
+<Callout kind="warn">
+The queued parser fix closes only the first row. The other two keep coming in after it ships.
+</Callout>
+
+## The split
+
+<SplitTable ticket={4471} />
+
+## How to tell them apart
+
+- **`parser`**: the body shows day and month swapped (7 April → 4 July). The tenant writes
+  the day first and the report came by app or email, or by form on booking-v2. Fix: the shared
+  parser reads dates in the tenant's locale.
+- **`hint`**: the same swap, but sent through the booking-v3 form by a day-first tenant
+  (alder.physio, copper.studio, pale.harbour). booking-v3 prints `MM/DD/YYYY` under the date
+  field, people type what it says, and the form reads it the tenant's way. The parser fix
+  does not touch this: the hint must follow the tenant's locale.
+- **`shift`**: no swap at all. The date moves by one day (Tuesday 12 May → Monday 11 May),
+  differs between clients in Lisbon and Toronto, or the invite arrives before the booking.
+  That is a time-zone conversion, not date order. These are the reports listed in
+  `desk-notes.json` as one-day moves; they were footnoted under `parser`, so they had no ticket.
+
+## Why it was merged as one
+
+- Intake tags by the reporter's browser, not the tenant. Every report from an `en-US` browser
+  was tagged `hint` and every other one `parser`, so the tags miss both real groups (see the
+  "intake tagged" column).
+- [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on subject. These reports have
+  twelve different subjects and still landed in one ticket, and the subject says nothing about
+  the cause. Merge on cause: tenant locale, booking form, channel, and what the body shows.
+- The export repeats reports across overlapping pages. Count by id; the table does.
+
+<RenderStamp {signature} />

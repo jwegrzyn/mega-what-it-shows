@@ -1,0 +1,5 @@
+{
+  "parser": { "number": 1, "url": "https://github.com/jwegrzyn/mega-what-it-shows/issues/1", "title": "parser: day-first dates are read month first" },
+  "hint": { "number": 2, "url": "https://github.com/jwegrzyn/mega-what-it-shows/issues/2", "title": "hint: booking-v3 form tells day-first tenants to type MM/DD" },
+  "shift": { "number": 3, "url": "https://github.com/jwegrzyn/mega-what-it-shows/issues/3", "title": "shift: bookings move by one day between time zones" }
+}
