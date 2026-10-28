@@ -22,6 +22,11 @@ first. The fix is queued.
 Known. One issue, one fix queued.
 </Callout>
 
+<Callout kind="warn">
+Split since: #4471 holds three problems, each with its own ticket. Where they stand and how to
+tell them apart is on <a href="/kb/incidents/4471-split">#4471 split · three problems, not one</a>.
+</Callout>
+
 ## What was merged
 
 <CauseTable ticket={4471} />
