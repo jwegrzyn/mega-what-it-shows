@@ -1,6 +1,7 @@
-// How #4471 splits into the problems it holds. causes.ts tells parser from hint by tenant and channel;
-// the one-day moves are a third problem that no tenant rule can find, so the desk lists them by id
-// (desk-notes.json) and this file gives them a cause of their own instead of a footnote.
+// How #4471 splits into the problems it holds. causes.ts tells parser from hint by tenant and channel,
+// and the desk counts them that way. The one-day moves are a third problem that no tenant rule can
+// find: the desk lists them by id (desk-notes.json) and files them under their tenant's cause. This
+// file keeps that count and gives them a group of their own as well, so they are counted in both.
 import { causeOf, uniqueById, type Cause, type Report, type Tenant } from '#lib/kb/causes';
 
 export type Problem = Cause | 'shift';
@@ -15,10 +16,6 @@ export type ProblemGroup = {
   lastSeen: string;
 };
 
-export function problemOf(r: Report, t: Tenant | undefined, shiftIds: readonly string[]): Problem | null {
-  return shiftIds.includes(r.id) ? 'shift' : causeOf(r, t);
-}
-
 const tally = (rs: Report[], key: (r: Report) => string) =>
   rs.reduce<Record<string, number>>((n, r) => ({ ...n, [key(r)]: (n[key(r)] ?? 0) + 1 }), {});
 
@@ -32,10 +29,12 @@ export function splitTicket(
   const by = new Map<Problem, Report[]>();
   const unplaced: Report[] = [];
   for (const r of merged) {
-    const p = problemOf(r, tenantOf(r), shiftIds);
+    const p = causeOf(r, tenantOf(r));
     if (p === null) unplaced.push(r);
     else by.set(p, [...(by.get(p) ?? []), r]);
   }
+  const shifted = merged.filter((r) => shiftIds.includes(r.id));
+  if (shifted.length) by.set('shift', shifted);
   const groups = [...by.entries()]
     .map(([problem, rs]) => {
       const days = rs.map((r) => r.receivedAt.slice(0, 10)).sort();

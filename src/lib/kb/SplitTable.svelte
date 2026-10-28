@@ -9,7 +9,7 @@
   let { ticket }: { ticket: number } = $props();
 
   const split = $derived(splitTicket(reports as Report[], ticket, tenantOf, notes.oneDayMove));
-  const issueOf = (p: Problem) => (issues as Record<string, { number: number; url: string; title: string }>)[p];
+  const issueOf = (p: Problem) => (issues as Record<string, { number: number; url: string; title: string; state: string; why: string }>)[p];
   const list = (n: Record<string, number>) =>
     Object.entries(n)
       .sort((a, b) => b[1] - a[1])
@@ -26,7 +26,7 @@
 
 <table>
   <thead>
-    <tr><th>problem</th><th>reports</th><th>ticket</th><th>tenants</th><th>channels</th><th>intake tagged</th><th>seen</th></tr>
+    <tr><th>problem</th><th>reports</th><th>ticket</th><th>state</th><th>tenants</th><th>channels</th><th>intake tagged</th><th>seen</th></tr>
   </thead>
   <tbody>
     {#each split.groups as g (g.problem)}
@@ -35,6 +35,7 @@
         <td><code>{g.problem}</code></td>
         <td><strong>{g.reports.length}</strong></td>
         <td>{#if issue}<a href={issue.url}>#{issue.number}</a>{:else}<span class="none">none</span>{/if}</td>
+        <td class:open={issue?.state === 'open'} title={issue?.why}>{issue?.state ?? '—'}</td>
         <td>{g.tenants}</td>
         <td class="small">{list(g.channels)}</td>
         <td class="small">{list(g.taggedAs)}</td>
@@ -44,8 +45,15 @@
   </tbody>
 </table>
 
+{#if split.groups.some((g) => g.problem === 'shift')}
+  <p class="small">
+    The <code>shift</code> reports are also counted under their tenant's cause, the way the desk files them,
+    so the rows add up to more than {split.merged.length}.
+  </p>
+{/if}
+
 <style>
   .sum { font-size: 1.05rem; }
   .small { color: var(--muted); font-size: 0.85em; }
-  .none { color: var(--warn); font-weight: 600; }
+  .none, .open { color: var(--warn); font-weight: 600; }
 </style>

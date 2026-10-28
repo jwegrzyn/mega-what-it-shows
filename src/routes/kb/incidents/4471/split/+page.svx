@@ -13,17 +13,25 @@ signature: jwegrzyn
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
 
-[#4471](/kb/incidents/4471) is marked known: one parser bug, one fix queued. The reports say
+[#4471](/kb/incidents/4471) was marked known: one parser bug, one fix queued. The reports say
 otherwise. Read by what their bodies show and where they came from, they hold three problems.
 Each one now has a ticket of its own, and the count beside it is the number of reports it covers.
 
 <Callout kind="warn">
-The queued parser fix closes only the first row. The other two keep coming in after it ships.
+#4471 closed on 5 October with two outcomes: the parser is fixed, and the booking-v3 form is
+retired. Neither touches time zones, so `shift` is still open and its reports will keep coming.
 </Callout>
 
 ## The split
 
 <SplitTable ticket={4471} />
+
+## Where each ticket stands
+
+- **#1 `parser`: fixed** by `fix(dates): parse dd/mm for eu locales`.
+- **#2 `hint`: won't fix.** The booking-v3 form is retired, so no new reports can come from it.
+- **#3 `shift`: open.** No change so far converts date-only bookings without a time zone.
+  New one-day moves belong here, not in a closed #4471.
 
 ## How to tell them apart
 
@@ -37,7 +45,8 @@ The queued parser fix closes only the first row. The other two keep coming in af
 - **`shift`**: no swap at all. The date moves by one day (Tuesday 12 May → Monday 11 May),
   differs between clients in Lisbon and Toronto, or the invite arrives before the booking.
   That is a time-zone conversion, not date order. These are the reports listed in
-  `desk-notes.json` as one-day moves; they were footnoted under `parser`, so they had no ticket.
+  `desk-notes.json` as one-day moves. The desk counts them under `parser` by tenant, and so do the
+  tickets, but the parser fix does not stop them, so they need a ticket of their own.
 
 ## Why it was merged as one
 
