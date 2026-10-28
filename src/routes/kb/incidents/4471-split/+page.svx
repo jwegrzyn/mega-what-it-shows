@@ -23,7 +23,7 @@ problems. Each one now has a ticket of its own:
 
 <Callout kind="warn">
 #4471 closed on 5 October with two outcomes: the parser is fixed, and the booking-v3 form is
-retired. Neither touches time zones, so `shift` is still open and its reports will keep coming.
+retired. Neither touches time zones, so shift is still open and its reports will keep coming.
 </Callout>
 
 ## The split
