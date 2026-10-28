@@ -5,5 +5,5 @@ desk_ref: DR-JJS4-ZGAN
 ---
 
 Screenshot of `/kb/incidents/4471-split/` built from `+page.svx` with the desk's own components:
-tickets #1 parser (fixed), #2 hint (won't fix), #3 shift (open); CauseTable for #4471 with parser 379,
+links to tickets #1 parser, #2 hint, #3 shift, which hold their status (pointer, no copied status); CauseTable for #4471 with parser 379,
 hint 33 and the note "5 reports read as a one-day move"; signed, desk ref DR-JJS4-ZGAN.

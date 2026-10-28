@@ -15,15 +15,18 @@ signature: jwegrzyn
 
 [#4471](/kb/incidents/4471) was marked known: one parser bug, one fix queued. The reports say
 otherwise. Read by tenant, booking form, channel and what the body shows, they hold three
-problems. Each one now has a ticket of its own:
+problems. Each one has a ticket of its own:
 
-- [#1 `parser`](https://github.com/jwegrzyn/mega-what-it-shows/issues/1): day-first dates are read month first. **Fixed.**
-- [#2 `hint`](https://github.com/jwegrzyn/mega-what-it-shows/issues/2): the booking-v3 form tells day-first tenants to type `MM/DD`. **Won't fix:** the form is retired.
-- [#3 `shift`](https://github.com/jwegrzyn/mega-what-it-shows/issues/3): bookings move by one day between time zones. **Open.**
+- [#1 `parser`](https://github.com/jwegrzyn/mega-what-it-shows/issues/1): day-first dates are read month first.
+- [#2 `hint`](https://github.com/jwegrzyn/mega-what-it-shows/issues/2): the booking-v3 form tells day-first tenants to type `MM/DD`.
+- [#3 `shift`](https://github.com/jwegrzyn/mega-what-it-shows/issues/3): bookings move by one day between time zones.
 
-<Callout kind="warn">
-#4471 closed on 5 October with two outcomes: the parser is fixed, and the booking-v3 form is
-retired. Neither touches time zones, so shift is still open and its reports will keep coming.
+<Callout>
+The tickets are the source of truth for status, outcome and owner, so this page keeps none of
+them. To know where a problem stands, read its ticket:
+<code>gh issue view 3 -R jwegrzyn/mega-what-it-shows</code>, or
+<a href="https://github.com/jwegrzyn/mega-what-it-shows/issues?q=is%3Aissue">all three tickets</a>.
+New reports go to the ticket of their problem, not to #4471.
 </Callout>
 
 ## The split
@@ -44,7 +47,7 @@ files them, but the parser fix does not stop them.
 - **`shift`**: no swap at all. The date moves by one day (Tuesday 12 May → Monday 11 May),
   differs between clients in Lisbon and Toronto, or the invite arrives before the booking.
   That is a time-zone conversion, not date order. These are the one-day moves in
-  `desk-notes.json`. New ones belong in #3, not in a closed #4471.
+  `desk-notes.json`. The parser fix does not stop them; they belong in #3.
 
 ## Why it was merged as one
 
