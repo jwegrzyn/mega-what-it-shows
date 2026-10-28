@@ -8,14 +8,18 @@ signature: jwegrzyn
 ---
 
 <script>
-  import SplitTable from '#lib/kb/SplitTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
 
 [#4471](/kb/incidents/4471) was marked known: one parser bug, one fix queued. The reports say
-otherwise. Read by what their bodies show and where they came from, they hold three problems.
-Each one now has a ticket of its own, and the count beside it is the number of reports it covers.
+otherwise. Read by tenant, booking form, channel and what the body shows, they hold three
+problems. Each one now has a ticket of its own:
+
+- [#1 `parser`](https://github.com/jwegrzyn/mega-what-it-shows/issues/1): day-first dates are read month first. **Fixed.**
+- [#2 `hint`](https://github.com/jwegrzyn/mega-what-it-shows/issues/2): the booking-v3 form tells day-first tenants to type `MM/DD`. **Won't fix:** the form is retired.
+- [#3 `shift`](https://github.com/jwegrzyn/mega-what-it-shows/issues/3): bookings move by one day between time zones. **Open.**
 
 <Callout kind="warn">
 #4471 closed on 5 October with two outcomes: the parser is fixed, and the booking-v3 form is
@@ -24,38 +28,32 @@ retired. Neither touches time zones, so `shift` is still open and its reports wi
 
 ## The split
 
-<SplitTable ticket={4471} />
+The desk's own count. The `parser` row is ticket #1 and the `hint` row is ticket #2. The note
+under the table is ticket #3: those reports are counted under `parser` by tenant, as the desk
+files them, but the parser fix does not stop them.
 
-## Where each ticket stands
-
-- **#1 `parser`: fixed** by `fix(dates): parse dd/mm for eu locales`.
-- **#2 `hint`: won't fix.** The booking-v3 form is retired, so no new reports can come from it.
-- **#3 `shift`: open.** No change so far converts date-only bookings without a time zone.
-  New one-day moves belong here, not in a closed #4471.
+<CauseTable ticket={4471} />
 
 ## How to tell them apart
 
 - **`parser`**: the body shows day and month swapped (7 April → 4 July). The tenant writes
-  the day first and the report came by app or email, or by form on booking-v2. Fix: the shared
-  parser reads dates in the tenant's locale.
-- **`hint`**: the same swap, but sent through the booking-v3 form by a day-first tenant
-  (alder.physio, copper.studio, pale.harbour). booking-v3 prints `MM/DD/YYYY` under the date
-  field, people type what it says, and the form reads it the tenant's way. The parser fix
-  does not touch this: the hint must follow the tenant's locale.
+  the day first and the report came by app or email, or by form on booking-v2.
+- **`hint`**: the same swap, but sent through the booking-v3 form by a day-first tenant.
+  booking-v3 prints `MM/DD/YYYY` under the date field, people type what it says, and the form
+  reads it the tenant's way. The parser fix does not touch this.
 - **`shift`**: no swap at all. The date moves by one day (Tuesday 12 May → Monday 11 May),
   differs between clients in Lisbon and Toronto, or the invite arrives before the booking.
-  That is a time-zone conversion, not date order. These are the reports listed in
-  `desk-notes.json` as one-day moves. The desk counts them under `parser` by tenant, and so do the
-  tickets, but the parser fix does not stop them, so they need a ticket of their own.
+  That is a time-zone conversion, not date order. These are the one-day moves in
+  `desk-notes.json`. New ones belong in #3, not in a closed #4471.
 
 ## Why it was merged as one
 
-- Intake tags by the reporter's browser, not the tenant. Every report from an `en-US` browser
-  was tagged `hint` and every other one `parser`, so the tags miss both real groups (see the
-  "intake tagged" column).
+- Intake tags by the reporter's browser, not the tenant: every report from an `en-US` browser
+  was tagged `hint`, every other one `parser`. The "tagged as" column shows how far that is
+  from the real split.
 - [Decision 0001](/kb/decisions/0001-dedupe-by-subject) merges on subject. These reports have
-  twelve different subjects and still landed in one ticket, and the subject says nothing about
-  the cause. Merge on cause: tenant locale, booking form, channel, and what the body shows.
+  different subjects and still landed in one ticket, and the subject says nothing about the
+  cause. Merge on cause: tenant locale, booking form, channel, and what the body shows.
 - The export repeats reports across overlapping pages. Count by id; the table does.
 
 <RenderStamp {signature} />
